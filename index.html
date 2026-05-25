@@ -1068,72 +1068,74 @@
       }
     ];
 
-    // Touch mode: prevent mouseleave from closing panel after a tap
+    // ── PHILOSOPHY WHEEL ────────────────────────────────────
     let _touchActive = false;
+    let _activeNode  = -1;
+
+    function _vn() { return document.body.classList.contains('lang-vn'); }
+
+    function _showPanel() {
+      const vn = _vn();
+      document.getElementById('pdEmoji').style.display   = 'block';
+      document.getElementById('pdTitleEN').style.display = vn ? 'none' : 'block';
+      document.getElementById('pdTitleVN').style.display = vn ? 'block' : 'none';
+      document.getElementById('pdTextEN').style.display  = vn ? 'none' : 'block';
+      document.getElementById('pdTextVN').style.display  = vn ? 'block' : 'none';
+      document.getElementById('pdHintEN').style.display  = 'none';
+      document.getElementById('pdHintVN').style.display  = 'none';
+    }
+
+    function _hidePanel() {
+      const vn = _vn();
+      ['pdEmoji','pdTitleEN','pdTitleVN','pdTextEN','pdTextVN'].forEach(id =>
+        document.getElementById(id).style.display = 'none'
+      );
+      document.getElementById('pdHintEN').style.display = vn ? 'none' : 'block';
+      document.getElementById('pdHintVN').style.display = vn ? 'block' : 'none';
+      document.querySelectorAll('.phil-node').forEach(n => n.classList.remove('active'));
+      document.querySelectorAll('.phil-spoke').forEach(s => s.classList.remove('active'));
+      _activeNode = -1;
+    }
 
     function philClick(i) {
-      const node = document.getElementById('node-' + i);
-      const alreadyActive = node.classList.contains('active');
+      // Called by onclick — handles both desktop click and mobile tap
       _touchActive = true;
-      if (alreadyActive) {
+      if (_activeNode === i) {
+        // Tap same node again → close
         _touchActive = false;
-        philReset();
+        _activeNode  = -1;
+        _hidePanel();
       } else {
         philOn(i);
       }
     }
 
-    function philReset() {
-      document.querySelectorAll('.phil-node').forEach(n => n.classList.remove('active'));
-      document.querySelectorAll('.phil-spoke').forEach(s => s.classList.remove('active'));
-      const isVN = document.body.classList.contains('lang-vn');
-      document.getElementById('pdEmoji').textContent   = '';
-      document.getElementById('pdTitleEN').textContent = '';
-      document.getElementById('pdTitleVN').textContent = '';
-      document.getElementById('pdDescEN').textContent  = '';
-      document.getElementById('pdDescVN').textContent  = '';
-      document.getElementById('pdHintEN').style.display = isVN ? 'none' : 'block';
-      document.getElementById('pdHintVN').style.display = isVN ? 'block' : 'none';
-    }
-
     function philOn(i) {
-      // Activate node + spoke
+      // Highlight node + spoke
       document.querySelectorAll('.phil-node').forEach(n => n.classList.remove('active'));
       document.querySelectorAll('.phil-spoke').forEach(s => s.classList.remove('active'));
       document.getElementById('node-' + i).classList.add('active');
       document.getElementById('spoke-' + i).classList.add('active');
+      _activeNode = i;
 
-      // Fill description panel
+      // Fill panel
       const d = philData[i];
-      document.getElementById('pdEmoji').textContent    = d.emoji;
-      document.getElementById('pdTitleEN').textContent  = d.en_title;
-      document.getElementById('pdTitleVN').textContent  = d.vn_title;
-      document.getElementById('pdTextEN').textContent   = d.en_desc;
-      document.getElementById('pdTextVN').textContent   = d.vn_desc;
+      document.getElementById('pdEmoji').textContent   = d.emoji;
+      document.getElementById('pdTitleEN').textContent = d.en_title;
+      document.getElementById('pdTitleVN').textContent = d.vn_title;
+      document.getElementById('pdTextEN').textContent  = d.en_desc;
+      document.getElementById('pdTextVN').textContent  = d.vn_desc;
 
-      // Show content, hide hint
-      ['pdEmoji','pdTitleEN','pdTitleVN','pdTextEN','pdTextVN'].forEach(id => {
-        document.getElementById(id).style.display = '';
-      });
-      document.getElementById('pdHintEN').style.display = 'none';
-      document.getElementById('pdHintVN').style.display = 'none';
+      _showPanel();
     }
 
     function philOff() {
-      if (_touchActive) return; // on mobile, keep panel open until next tap
-      document.querySelectorAll('.phil-node').forEach(n => n.classList.remove('active'));
-      document.querySelectorAll('.phil-spoke').forEach(s => s.classList.remove('active'));
-
-      // Hide content, show hint
-      ['pdEmoji','pdTitleEN','pdTitleVN','pdTextEN','pdTextVN'].forEach(id => {
-        document.getElementById(id).style.display = 'none';
-      });
-      document.getElementById('pdHintEN').style.display = '';
-      document.getElementById('pdHintVN').style.display = '';
+      if (_touchActive) return; // mobile: mouseleave must not close panel
+      _hidePanel();
     }
 
-    // Init hidden state
-    philOff();
+    // Init: hide panel on load
+    _hidePanel();
   </script>
 
 </body>
