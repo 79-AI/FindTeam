@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phúc & Tài — Build With Us · The Ant Adventures</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+
+    /* ── TOKENS ──────────────────────────────────────────── */
+    :root {
+      --green:      #2E7D52;
+      --green-dark: #1d5236;
+      --green-mid:  #3a9460;
+      --green-lt:   #e8f5ee;
+      --amber:      #C8963E;
+      --amber-lt:   #fdf3e3;
+      --coffee:     #5C3D2E;
+      --coffee-lt:  #f5ede8;
+      --ink:        #111827;
+      --mid:        #4b5563;
+      --muted:      #9ca3af;
+      --bg:         #f9fafb;
+      --white:      #ffffff;
+      --border:     #e5e7eb;
+      --r:          14px;
+      --r-lg:       22px;
+      --sh:         0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
+      --sh-lg:      0 8px 32px rgba(0,0,0,.12);
+    }
+
+    /* ── RESET ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; overflow-x: hidden; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── LANGUAGE ────────────────────────────────────────── */
+    .vn, span.vn { display: none; }
+    body.lang-vn .en, body.lang-vn span.en { display: none; }
+    body.lang-vn .vn { display: block; }
+    body.lang-vn span.vn { display: inline; }
+    /* SVG text */
+    body.lang-vn text.en { display: none; }
+    body.lang-vn text.vn { display: block; }
+    text.vn { display: none; }
+
+    /* ── TOPBAR ──────────────────────────────────────────── */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 48px;
+      background: rgba(249,250,251,.94);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar-brand { display: flex; align-items: center; gap: 9px; font-size: .82rem; font-weight: 600; color: var(--green); }
+    .lang-toggle { display: flex; gap: 4px; background: var(--border); border-radius: 40px; padding: 4px; }
+    .lang-btn { border: none; cursor: pointer; padding: 6px 18px; border-radius: 40px; font-size: .75rem; font-weight: 600; letter-spacing: .05em; transition: all .2s; background: transparent; color: var(--mid); }
+    .lang-btn.active { background: var(--green); color: #fff; box-shadow: 0 2px 8px rgba(46,125,82,.3); }
+
+    /* ── LAYOUT ──────────────────────────────────────────── */
+    .wrap { max-width: 1040px; margin: 0 auto; }
+    section { padding: 96px 40px; }
+
+    .sec-tag {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: .68rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 16px;
+    }
+    .sec-tag::before { content: ''; width: 24px; height: 2px; background: currentColor; }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.9rem, 4vw, 2.8rem);
+      font-weight: 700; color: var(--ink); line-height: 1.2; margin-bottom: 16px;
+    }
+    h2 em { font-style: italic; color: var(--green); }
+
+    /* ── FADE ────────────────────────────────────────────── */
+    .fi { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+    .fi.visible { opacity: 1; transform: none; }
+
+    /* ── BUTTONS ─────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 32px; border-radius: 40px;
+      font-size: .88rem; font-weight: 600; transition: all .2s; border: none; cursor: pointer;
+    }
+    .btn-white  { background: #fff; color: var(--green); box-shadow: 0 4px 20px rgba(0,0,0,.18); }
+    .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,.26); }
+    .btn-ghost  { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.4); }
+    .btn-ghost:hover { border-color: #fff; background: rgba(255,255,255,.08); }
+    .btn-green  { background: var(--green); color: #fff; box-shadow: 0 4px 16px rgba(46,125,82,.35); }
+    .btn-green:hover { background: var(--green-dark); transform: translateY(-2px); }
+    .btn-amber  { background: var(--amber); color: #fff; box-shadow: 0 4px 16px rgba(200,150,62,.35); }
+    .btn-amber:hover { background: #a67930; transform: translateY(-2px); }
+
+    /* ════════════════════════════════════════════════════════
+       HERO
+    ════════════════════════════════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      padding: 130px 40px 90px;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(150deg, #071a10 0%, #0e2d1e 45%, #1d5236 80%, #2E7D52 100%);
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E") repeat;
+    }
+    .hero-inner { max-width: 800px; width: 100%; text-align: center; position: relative; z-index: 1; }
+
+    .hero-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.17);
+      border-radius: 40px; padding: 6px 20px;
+      font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+      color: rgba(255,255,255,.85); margin-bottom: 32px;
+    }
+    .hero-h {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      font-weight: 700; color: #fff; line-height: 1.1; margin-bottom: 24px;
+    }
+    .hero-h em { font-style: italic; color: #a8e0bf; }
+    .hero-sub {
+      font-size: clamp(.92rem, 2vw, 1.1rem); color: rgba(255,255,255,.7);
+      max-width: 560px; margin: 0 auto 44px; font-weight: 300; line-height: 1.85;
+    }
+
+    /* founder pills */
+    .hero-duo { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 44px; }
+    .hero-duo-sep { display: flex; align-items: center; color: rgba(255,255,255,.3); font-size: .85rem; font-style: italic; }
+    .hero-pill {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.17);
+      border-radius: 60px; padding: 9px 22px 9px 9px;
+      transition: background .2s;
+    }
+    .hero-pill:hover { background: rgba(255,255,255,.15); }
+    .pill-av {
+      width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; flex-shrink: 0;
+      overflow: hidden;
+    }
+    .av-tp  { background: linear-gradient(135deg,#a8e0bf,#2E7D52); color: #fff; border: 2px solid rgba(46,125,82,.4); }
+    .av-pv  { background: linear-gradient(135deg,#f7d58b,#C8963E); color: #2e1a0e; border: 2px solid rgba(200,150,62,.4); }
+    .pill-av img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+    .pill-info { text-align: left; }
+    .pill-name { font-size: .88rem; font-weight: 600; color: #fff; line-height: 1.2; }
+    .pill-role { font-size: .68rem; color: rgba(255,255,255,.55); margin-top: 2px; }
+
+    /* big numbers strip */
+    .hero-nums {
+      display: flex; gap: 0; justify-content: center;
+      background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--r-lg); overflow: hidden; margin-bottom: 44px;
+    }
+    .hnum { flex: 1; padding: 24px 16px; border-right: 1px solid rgba(255,255,255,.09); }
+    .hnum:last-child { border-right: none; }
+    .hnum-val {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem; font-weight: 700; color: #a8e0bf; display: block; line-height: 1;
+    }
+    .hnum-lbl { font-size: .65rem; color: rgba(255,255,255,.55); margin-top: 6px; text-transform: uppercase; letter-spacing: .08em; }
+
+    .hero-ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .hero-scroll {
+      position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      color: rgba(255,255,255,.35); font-size: .65rem; letter-spacing: .12em;
+    }
+    .hero-scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, rgba(255,255,255,.45), transparent);
+      animation: sc 2.2s ease-in-out infinite;
+    }
+    @keyframes sc { 0%,100%{opacity:.35} 50%{opacity:1} }
+
+    /* ════════════════════════════════════════════════════════
+       FOUNDERS — PLAYER CARDS
+    ════════════════════════════════════════════════════════ */
+    .founders-section { background: #fff; }
+
+    .player-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+
+    .player-card {
+      border-radius: var(--r-lg); overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--sh);
+      transition: box-shadow .25s, transform .25s;
+      background: #fff;
+    }
+    .player-card:hover { box-shadow: var(--sh-lg); transform: translateY(-4px); }
+
+    .pc-header {
+      padding: 28px 28px 20px;
+      display: flex; align-items: center; gap: 18px;
+    }
+    .pc-header.tp { background: linear-gradient(135deg, #e8f5ee, #d4eddf); border-bottom: 1px solid var(--green-lt); }
+    .pc-header.pv { background: linear-gradient(135deg, #fdf3e3, #f8e4c0); border-bottom: 1px solid var(--amber-lt); }
+
+    .pc-av {
+      width: 60px; height: 60px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; flex-shrink: 0;
+      overflow: hidden;
+    }
+    .pc-av.tp { background: linear-gradient(135deg,#a8e0bf,#2E7D52); color: #fff; box-shadow: 0 0 0 3px rgba(46,125,82,.25); }
+    .pc-av.pv { background: linear-gradient(135deg,#f7d58b,#C8963E); color: #2e1a0e; box-shadow: 0 0 0 3px rgba(200,150,62,.25); }
+    .pc-av img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+    .pc-id {}
+    .pc-name { font-family:'Playfair Display',serif; font-size: 1.15rem; font-weight: 700; color: var(--ink); }
+    .pc-title { font-size: .72rem; color: var(--mid); margin-top: 3px; }
+
+    /* stat grid 2×2 */
+    .pc-stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+    }
+    .pc-stat {
+      padding: 20px 24px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .pc-stat:nth-child(2n) { border-right: none; }
+    .pc-stat:nth-child(3), .pc-stat:nth-child(4) { border-bottom: none; }
+    .pc-stat-val {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem; font-weight: 700; line-height: 1;
+      color: var(--ink);
+    }
+    .pc-stat-val.green { color: var(--green); }
+    .pc-stat-val.amber { color: var(--amber); }
+    .pc-stat-lbl { font-size: .67rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-top: 5px; }
+
+    .pc-quote {
+      padding: 20px 24px;
+      font-style: italic; font-size: .88rem; color: var(--mid); line-height: 1.7;
+      border-left: 3px solid var(--border);
+      margin: 20px 24px;
+      border-radius: 2px;
+    }
+    .pc-quote.green { border-color: var(--green); }
+    .pc-quote.amber { border-color: var(--amber); }
+
+    /* ════════════════════════════════════════════════════════
+       ECOSYSTEM — HUB DIAGRAM
+    ════════════════════════════════════════════════════════ */
+    .ecosystem-section { background: var(--bg); }
+
+    .hub-wrap {
+      max-width: 660px; margin: 0 auto 56px;
+      position: relative;
+    }
+    .hub-svg { width: 100%; height: auto; display: block; }
+
+    /* venture data strips */
+    .venture-strips { display: flex; flex-direction: column; gap: 16px; }
+    .vstrip {
+      display: flex; align-items: center;
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--r); padding: 20px 28px;
+      box-shadow: var(--sh); gap: 20px;
+      transition: box-shadow .2s, transform .2s;
+      text-decoration: none; color: inherit;
+    }
+    .vstrip:hover { box-shadow: var(--sh-lg); transform: translateX(4px); }
+    .vs-icon { font-size: 1.8rem; flex-shrink: 0; width: 44px; text-align: center; }
+    .vs-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem; font-weight: 700; color: var(--ink);
+      min-width: 180px;
+    }
+    .vs-type { font-size: .68rem; color: var(--muted); margin-top: 2px; }
+    .vs-divider { width: 1px; height: 36px; background: var(--border); flex-shrink: 0; }
+    .vs-nums { display: flex; gap: 32px; flex: 1; }
+    .vs-num { text-align: center; }
+    .vs-num-val { font-family:'Playfair Display',serif; font-size: 1.2rem; font-weight: 700; color: var(--ink); display: block; line-height: 1; }
+    .vs-num-val.g { color: var(--green); }
+    .vs-num-val.a { color: var(--amber); }
+    .vs-num-val.c { color: var(--coffee); }
+    .vs-num-lbl { font-size: .62rem; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-top: 4px; }
+    .vs-link {
+      margin-left: auto; font-size: .75rem; font-weight: 600;
+      padding: 7px 16px; border-radius: 40px;
+      border: 1px solid var(--border); color: var(--mid);
+      transition: all .2s; flex-shrink: 0;
+    }
+    .vstrip:hover .vs-link { background: var(--green); color: #fff; border-color: var(--green); }
+    .vstrip.amber:hover .vs-link { background: var(--amber); color: #fff; border-color: var(--amber); }
+    .vstrip.coffee:hover .vs-link { background: var(--coffee); color: #fff; border-color: var(--coffee); }
+
+    /* accent borders */
+    .vstrip.green-v { border-left: 4px solid var(--green); }
+    .vstrip.amber-v { border-left: 4px solid var(--amber); }
+    .vstrip.coffee-v { border-left: 4px solid var(--coffee); }
+
+    /* ════════════════════════════════════════════════════════
+       VALUES — ICON GRID
+    ════════════════════════════════════════════════════════ */
+    .values-section { background: #fff; }
+
+    /* Philosophy Wheel */
+    .phil-outer { max-width: 540px; margin: 0 auto; }
+    .phil-svg   { width: 100%; height: auto; display: block; }
+
+    .phil-node  { cursor: pointer; }
+    .phil-node-bg {
+      fill: var(--green-lt); stroke: #2E7D52; stroke-width: 1.5;
+      transition: fill .22s;
+    }
+    .phil-node.active .phil-node-bg,
+    .phil-node:hover  .phil-node-bg { fill: #2E7D52; }
+
+    .phil-node-lbl {
+      font-family: Inter, sans-serif; font-size: 8px; font-weight: 600;
+      fill: #1d5236; transition: fill .22s; pointer-events: none;
+    }
+    .phil-node.active .phil-node-lbl,
+    .phil-node:hover  .phil-node-lbl { fill: #fff; }
+
+    .phil-spoke {
+      stroke: #d1d5db; stroke-width: 1.5; stroke-dasharray: 5,4;
+      transition: stroke .22s;
+    }
+    .phil-spoke.active { stroke: #2E7D52; stroke-dasharray: none; }
+
+    /* Description card below wheel */
+    .phil-desc {
+      margin-top: 28px;
+      background: var(--green-lt);
+      border-radius: var(--r-lg);
+      padding: 28px 36px;
+      text-align: center;
+      min-height: 116px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      transition: background .25s;
+    }
+    .phil-desc-emoji { font-size: 1.8rem; margin-bottom: 8px; display: none; }
+    .phil-desc-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem; font-weight: 700; color: var(--ink);
+      margin-bottom: 8px; display: none;
+    }
+    .phil-desc-text  { font-size: .88rem; color: var(--mid); line-height: 1.75; max-width: 420px; display: none; }
+    .phil-desc-hint  { font-size: .78rem; color: var(--muted); font-style: italic; }
+
+    /* ════════════════════════════════════════════════════════
+       FIT
+    ════════════════════════════════════════════════════════ */
+    .fit-section { background: var(--bg); }
+    .fit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+
+    .fit-col-head {
+      display: flex; align-items: center; gap: 10px;
+      padding-bottom: 14px; border-bottom: 2px solid var(--border);
+      margin-bottom: 20px; font-family:'Playfair Display',serif;
+      font-size: 1rem; font-weight: 700; color: var(--ink);
+    }
+    .fit-col-head.yes { border-color: var(--green); }
+
+    .fit-items { display: flex; flex-direction: column; gap: 12px; }
+    .fit-item { display: flex; align-items: flex-start; gap: 10px; font-size: .87rem; color: var(--mid); line-height: 1.6; }
+    .fit-dot {
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .65rem; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+    }
+    .fit-dot.y { background: var(--green-lt); color: var(--green); }
+    .fit-dot.n { background: #f3f4f6; color: var(--muted); }
+
+    /* ════════════════════════════════════════════════════════
+       CTA
+    ════════════════════════════════════════════════════════ */
+    .cta-section {
+      background: linear-gradient(150deg, #071a10 0%, #0e2d1e 50%, #1d5236 100%);
+      padding: 112px 40px; text-align: center; position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content:''; position:absolute; inset:0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E") repeat;
+    }
+    .cta-inner { max-width: 640px; margin: 0 auto; position: relative; z-index: 1; }
+    .cta-chip {
+      display:inline-flex; align-items:center; gap:8px;
+      background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.17);
+      border-radius:40px; padding:6px 20px;
+      font-size:.7rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase;
+      color:rgba(255,255,255,.8); margin-bottom:24px;
+    }
+    .cta-h {
+      font-family:'Playfair Display',serif;
+      font-size:clamp(1.8rem,5vw,3rem); font-weight:700;
+      color:#fff; line-height:1.2; margin-bottom:18px;
+    }
+    .cta-h em { font-style:italic; color:#a8e0bf; }
+    .cta-sub { font-size:.97rem; color:rgba(255,255,255,.65); line-height:1.85; margin-bottom:36px; }
+    .cta-btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:28px; }
+    .cta-note { font-size:.78rem; color:rgba(255,255,255,.38); line-height:1.7; }
+    .cta-note a { color:rgba(255,255,255,.6); text-decoration:underline; }
+
+    /* ── FOOTER ──────────────────────────────────────────── */
+    footer {
+      background:#060e08; padding:28px 48px;
+      display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px;
+    }
+    .ft-brand { font-size:.78rem; color:rgba(255,255,255,.4); display:flex; align-items:center; gap:8px; }
+    .ft-links { display:flex; gap:24px; font-size:.75rem; color:rgba(255,255,255,.35); }
+    .ft-links a:hover { color:rgba(255,255,255,.75); transition:color .2s; }
+
+    /* ── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .player-grid, .fit-grid { grid-template-columns: 1fr; }
+      .val-grid { grid-template-columns: 1fr 1fr; }
+      .hero-nums { flex-direction: column; }
+      .hnum { border-right: none; border-bottom: 1px solid rgba(255,255,255,.09); }
+      .hnum:last-child { border-bottom: none; }
+      .vs-nums { gap: 16px; }
+    }
+    @media (max-width: 640px) {
+      section, .cta-section { padding: 68px 24px; }
+      .hero { padding: 110px 24px 80px; }
+      .topbar { padding: 13px 24px; }
+      .val-grid { grid-template-columns: 1fr; }
+      .hero-duo { flex-direction: column; align-items: center; }
+      .vstrip { flex-wrap: wrap; }
+      .vs-divider { display: none; }
+      .vs-nums { gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <span>🐜</span>
+      <span class="en">The Ant Adventures · Vietnam</span>
+      <span class="vn">The Ant Adventures · Việt Nam</span>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btnEN" onclick="setLang('en')">🇬🇧 EN</button>
+      <button class="lang-btn"        id="btnVN" onclick="setLang('vn')">🇻🇳 VN</button>
+    </div>
+  </div>
+
+  <!-- ═══ HERO ══════════════════════════════════════════════ -->
+  <section class="hero" id="top">
+    <div class="hero-inner">
+
+      <div class="hero-chip">
+        <span>🐜</span>
+        <span class="en">Vietnam · 2 Founders · 3 Ventures · 1 Mission</span>
+        <span class="vn">Việt Nam · 2 Sáng lập · 3 Ventures · 1 Sứ mệnh</span>
+      </div>
+
+      <h1 class="hero-h">
+        <span class="en">Build <em>something real</em><br>with us.</span>
+        <span class="vn">Hãy cùng chúng tôi<br><em>xây điều có giá trị</em>.</span>
+      </h1>
+
+      <p class="hero-sub en">Two founders. Mekong Delta roots. Thirty years of tourism. Three ventures in motion. We don't want employees — we want builders.</p>
+      <p class="hero-sub vn">Hai nhà sáng lập. Gốc Đồng Bằng Sông Cửu Long. 30 năm du lịch. Ba ventures đang vận hành. Chúng tôi không tìm nhân viên — chúng tôi tìm người cùng xây.</p>
+
+      <!-- Duo -->
+      <div class="hero-duo">
+        <div class="hero-pill">
+          <div class="pill-av av-tp"><img src="TaiPham.jpg" alt="Phạm Tấn Tài" /></div>
+          <div class="pill-info">
+            <div class="pill-name">Phạm Tấn Tài</div>
+            <div class="pill-role en">Sales & Systems · Long Xuyên</div>
+            <div class="pill-role vn">Sales & Hệ thống · Long Xuyên</div>
+          </div>
+        </div>
+        <div class="hero-duo-sep">&amp;</div>
+        <div class="hero-pill">
+          <div class="pill-av av-pv"><img src="Phuc Vo.jpg" alt="Võ Hoàng Phúc" /></div>
+          <div class="pill-info">
+            <div class="pill-name">Võ Hoàng Phúc</div>
+            <div class="pill-role en">Brand & Culture · Saigon</div>
+            <div class="pill-role vn">Thương hiệu & Văn hóa · Sài Gòn</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Numbers -->
+      <div class="hero-nums">
+        <div class="hnum">
+          <span class="hnum-val">30</span>
+          <div class="hnum-lbl en">Yrs tourism</div>
+          <div class="hnum-lbl vn">Năm du lịch</div>
+        </div>
+        <div class="hnum">
+          <span class="hnum-val">$10M</span>
+          <div class="hnum-lbl en">10-yr vision</div>
+          <div class="hnum-lbl vn">Tầm nhìn</div>
+        </div>
+        <div class="hnum">
+          <span class="hnum-val">50</span>
+          <div class="hnum-lbl en">Future team</div>
+          <div class="hnum-lbl vn">Đội ngũ</div>
+        </div>
+        <div class="hnum">
+          <span class="hnum-val">17M</span>
+          <div class="hnum-lbl en">Coffee market</div>
+          <div class="hnum-lbl vn">Thị trường cà phê</div>
+        </div>
+      </div>
+
+      <div class="hero-ctas">
+        <a href="#founders" class="btn btn-white">
+          <span class="en">Meet the team ↓</span>
+          <span class="vn">Gặp đội nhóm ↓</span>
+        </a>
+        <a href="#contact" class="btn btn-ghost">
+          <span class="en">✉ Get in touch</span>
+          <span class="vn">✉ Liên hệ</span>
+        </a>
+      </div>
+
+    </div>
+    <div class="hero-scroll">
+      <div class="hero-scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ═══ FOUNDERS ══════════════════════════════════════════ -->
+  <section class="founders-section" id="founders">
+    <div class="wrap">
+
+      <div class="sec-tag fi en">The Team</div>
+      <div class="sec-tag fi vn">Đội Ngũ Sáng Lập</div>
+      <h2 class="fi en">Two founders. <em>Equal weight.</em></h2>
+      <h2 class="fi vn">Hai nhà sáng lập. <em>Vai trò ngang bằng.</em></h2>
+
+      <div class="player-grid" style="margin-top:40px;">
+
+        <!-- Võ Hoàng Phúc -->
+        <div class="player-card fi">
+          <div class="pc-header pv">
+            <div class="pc-av pv"><img src="Phuc Vo.jpg" alt="Võ Hoàng Phúc" /></div>
+            <div class="pc-id">
+              <div class="pc-name">Võ Hoàng Phúc</div>
+              <div class="pc-title en">Co-founder · CEO · Ho Chi Minh City</div>
+              <div class="pc-title vn">Đồng sáng lập · CEO · Hồ Chí Minh</div>
+            </div>
+          </div>
+          <div class="pc-stats">
+            <div class="pc-stat">
+              <div class="pc-stat-val amber">15</div>
+              <div class="pc-stat-lbl en">Tourism years</div>
+              <div class="pc-stat-lbl vn">Năm du lịch</div>
+            </div>
+            <div class="pc-stat">
+              <div class="pc-stat-val amber">20+</div>
+              <div class="pc-stat-lbl en">Countries visited</div>
+              <div class="pc-stat-lbl vn">Quốc gia đã đến</div>
+            </div>
+            <div class="pc-stat">
+              <div class="pc-stat-val amber">100</div>
+              <div class="pc-stat-lbl en">Guides led @ TNK</div>
+              <div class="pc-stat-lbl vn">HDV dẫn dắt @ TNK</div>
+            </div>
+            <div class="pc-stat">
+              <div class="pc-stat-val amber">2</div>
+              <div class="pc-stat-lbl en">Startups before</div>
+              <div class="pc-stat-lbl vn">Startup trước đây</div>
+            </div>
+          </div>
+          <blockquote class="pc-quote amber en">"We don't sell tours. We create experiences people will talk about forever."</blockquote>
+          <blockquote class="pc-quote amber vn">"Chúng tôi không bán tour. Chúng tôi tạo ra trải nghiệm mà khách hàng sẽ kể lại mãi."</blockquote>
+        </div>
+
+        <!-- Phạm Tấn Tài -->
+        <div class="player-card fi">
+          <div class="pc-header tp">
+            <div class="pc-av tp"><img src="TaiPham.jpg" alt="Phạm Tấn Tài" /></div>
+            <div class="pc-id">
+              <div class="pc-name">Phạm Tấn Tài</div>
+              <div class="pc-title en">Co-founder · Director · Long Xuyên</div>
+              <div class="pc-title vn">Đồng sáng lập · Giám đốc · Long Xuyên</div>
+            </div>
+          </div>
+          <div class="pc-stats">
+            <div class="pc-stat">
+              <div class="pc-stat-val green">15</div>
+              <div class="pc-stat-lbl en">Tourism years</div>
+              <div class="pc-stat-lbl vn">Năm du lịch</div>
+            </div>
+            <div class="pc-stat">
+              <div class="pc-stat-val green">4</div>
+              <div class="pc-stat-lbl en">Markets served</div>
+              <div class="pc-stat-lbl vn">Thị trường phục vụ</div>
+            </div>
+            <div class="pc-stat">
+              <div class="pc-stat-val green">AI</div>
+              <div class="pc-stat-lbl en">CRM built in-house</div>
+              <div class="pc-stat-lbl vn">CRM AI tự xây</div>
+            </div>
+            <div class="pc-stat">
+              <div class="pc-stat-val green">3</div>
+              <div class="pc-stat-lbl en">Ventures running</div>
+              <div class="pc-stat-lbl vn">Ventures đang chạy</div>
+            </div>
+          </div>
+          <blockquote class="pc-quote green en">"Small step by step will lead to success. Stay calm — solve the problem first."</blockquote>
+          <blockquote class="pc-quote green vn">"Từng bước nhỏ sẽ dẫn đến thành công. Bình tĩnh — giải quyết vấn đề trước."</blockquote>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ECOSYSTEM ══════════════════════════════════════════ -->
+  <section class="ecosystem-section" id="ventures">
+    <div class="wrap">
+
+      <div class="sec-tag fi en">The Ecosystem</div>
+      <div class="sec-tag fi vn">Hệ Sinh Thái</div>
+      <h2 class="fi en">Three ventures. <em>One core value.</em></h2>
+      <h2 class="fi vn">Ba ventures. <em>Một giá trị cốt lõi.</em></h2>
+
+      <!-- HUB DIAGRAM -->
+      <div class="hub-wrap fi">
+        <svg class="hub-svg" viewBox="0 0 700 460" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+          <!-- Connecting lines (dashed) -->
+          <!-- Center (350,230) to Ant (350,80) -->
+          <line x1="350" y1="163" x2="350" y2="128" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="5,4"/>
+          <!-- Center to CRM (170,390) -->
+          <line x1="296" y1="272" x2="218" y2="348" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="5,4"/>
+          <!-- Center to Thở (530,390) -->
+          <line x1="404" y1="272" x2="482" y2="348" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="5,4"/>
+
+          <!-- ── CENTER HUB ── -->
+          <circle cx="350" cy="230" r="67" fill="#2E7D52"/>
+          <circle cx="350" cy="230" r="60" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+
+          <!-- Center label EN -->
+          <text x="350" y="218" class="en" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter, sans-serif" font-size="9" letter-spacing="2" font-weight="600">CREATE</text>
+          <text x="350" y="234" class="en" text-anchor="middle" fill="#ffffff" font-family="Playfair Display, serif" font-size="15" font-weight="700">Value</text>
+          <text x="350" y="250" class="en" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter, sans-serif" font-size="8" letter-spacing="1.5">PHÚC &amp; TÀI</text>
+
+          <!-- Center label VN -->
+          <text x="350" y="218" class="vn" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Inter, sans-serif" font-size="9" letter-spacing="2" font-weight="600">TẠO</text>
+          <text x="350" y="234" class="vn" text-anchor="middle" fill="#ffffff" font-family="Playfair Display, serif" font-size="15" font-weight="700">Giá Trị</text>
+          <text x="350" y="250" class="vn" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="Inter, sans-serif" font-size="8" letter-spacing="1.5">PHÚC &amp; TÀI</text>
+
+          <!-- ── NODE: THE ANT ADVENTURES (top) ── -->
+          <circle cx="350" cy="70" r="52" fill="#e8f5ee" stroke="#2E7D52" stroke-width="1.5"/>
+          <text x="350" y="60" text-anchor="middle" font-size="20">🐜</text>
+          <text x="350" y="78" class="en" text-anchor="middle" fill="#1d5236" font-family="Inter,sans-serif" font-size="8.5" font-weight="700">THE ANT</text>
+          <text x="350" y="90" class="en" text-anchor="middle" fill="#1d5236" font-family="Inter,sans-serif" font-size="8.5" font-weight="700">ADVENTURES</text>
+          <text x="350" y="78" class="vn" text-anchor="middle" fill="#1d5236" font-family="Inter,sans-serif" font-size="8" font-weight="700">THE ANT</text>
+          <text x="350" y="90" class="vn" text-anchor="middle" fill="#1d5236" font-family="Inter,sans-serif" font-size="8" font-weight="700">ADVENTURES</text>
+
+          <!-- Tag: Tourism -->
+          <rect x="295" y="100" width="110" height="18" rx="9" fill="#2E7D52" opacity="0.12"/>
+          <text x="350" y="112" class="en" text-anchor="middle" fill="#1d5236" font-family="Inter,sans-serif" font-size="7.5" font-weight="600">Luxury Tourism</text>
+          <text x="350" y="112" class="vn" text-anchor="middle" fill="#1d5236" font-family="Inter,sans-serif" font-size="7.5" font-weight="600">Du lịch Luxury</text>
+
+          <!-- ── NODE: CRM FOR TOURISM (bottom-left) ── -->
+          <circle cx="170" cy="390" r="52" fill="#fdf3e3" stroke="#C8963E" stroke-width="1.5"/>
+          <text x="170" y="380" text-anchor="middle" font-size="20">💻</text>
+          <text x="170" y="398" class="en" text-anchor="middle" fill="#7a5010" font-family="Inter,sans-serif" font-size="8.5" font-weight="700">CRM FOR</text>
+          <text x="170" y="410" class="en" text-anchor="middle" fill="#7a5010" font-family="Inter,sans-serif" font-size="8.5" font-weight="700">TOURISM</text>
+          <text x="170" y="398" class="vn" text-anchor="middle" fill="#7a5010" font-family="Inter,sans-serif" font-size="8" font-weight="700">CRM DU LỊCH</text>
+          <text x="170" y="410" class="vn" text-anchor="middle" fill="#7a5010" font-family="Inter,sans-serif" font-size="8" font-weight="700">VIỆT NAM</text>
+
+          <!-- Tag: SaaS -->
+          <rect x="118" y="420" width="104" height="18" rx="9" fill="#C8963E" opacity="0.12"/>
+          <text x="170" y="432" class="en" text-anchor="middle" fill="#7a5010" font-family="Inter,sans-serif" font-size="7.5" font-weight="600">SaaS · Live</text>
+          <text x="170" y="432" class="vn" text-anchor="middle" fill="#7a5010" font-family="Inter,sans-serif" font-size="7.5" font-weight="600">SaaS · Đang chạy</text>
+
+          <!-- ── NODE: THỞ CÀ PHÊ (bottom-right) ── -->
+          <circle cx="530" cy="390" r="52" fill="#f5ede8" stroke="#5C3D2E" stroke-width="1.5"/>
+          <text x="530" y="380" text-anchor="middle" font-size="20">☕</text>
+          <text x="530" y="398" class="en" text-anchor="middle" fill="#5C3D2E" font-family="Inter,sans-serif" font-size="8.5" font-weight="700">THỞ CÀ PHÊ</text>
+          <text x="530" y="410" class="en" text-anchor="middle" fill="#5C3D2E" font-family="Inter,sans-serif" font-size="8.5" font-weight="700">COFFEE</text>
+          <text x="530" y="398" class="vn" text-anchor="middle" fill="#5C3D2E" font-family="Inter,sans-serif" font-size="8" font-weight="700">THỞ CÀ PHÊ</text>
+          <text x="530" y="410" class="vn" text-anchor="middle" fill="#5C3D2E" font-family="Inter,sans-serif" font-size="8" font-weight="700">CÀ PHÊ SPECIALTY</text>
+
+          <!-- Tag: Coffee -->
+          <rect x="472" y="420" width="116" height="18" rx="9" fill="#5C3D2E" opacity="0.1"/>
+          <text x="530" y="432" class="en" text-anchor="middle" fill="#5C3D2E" font-family="Inter,sans-serif" font-size="7.5" font-weight="600">Mindful · ĐBSCL</text>
+          <text x="530" y="432" class="vn" text-anchor="middle" fill="#5C3D2E" font-family="Inter,sans-serif" font-size="7.5" font-weight="600">Mindful · ĐBSCL</text>
+
+          <!-- Connection dots on lines -->
+          <circle cx="323" cy="200" r="3" fill="#d1d5db"/>
+          <circle cx="257" cy="310" r="3" fill="#d1d5db"/>
+          <circle cx="443" cy="310" r="3" fill="#d1d5db"/>
+
+        </svg>
+      </div>
+
+      <!-- VENTURE STRIPS -->
+      <div class="venture-strips">
+
+        <a href="https://theantadventures.com/" target="_blank" class="vstrip green-v fi">
+          <div class="vs-icon">🐜</div>
+          <div>
+            <div class="vs-name">The Ant Adventures</div>
+            <div class="vs-type en">Luxury Inbound Tourism · Vietnam</div>
+            <div class="vs-type vn">Du lịch Luxury Inbound · Việt Nam</div>
+          </div>
+          <div class="vs-divider"></div>
+          <div class="vs-nums">
+            <div class="vs-num">
+              <span class="vs-num-val g">$10M</span>
+              <div class="vs-num-lbl en">Vision</div>
+              <div class="vs-num-lbl vn">Tầm nhìn</div>
+            </div>
+            <div class="vs-num">
+              <span class="vs-num-val g">50</span>
+              <div class="vs-num-lbl en">Future staff</div>
+              <div class="vs-num-lbl vn">Nhân viên</div>
+            </div>
+            <div class="vs-num">
+              <span class="vs-num-val g">5</span>
+              <div class="vs-num-lbl en">Int'l markets</div>
+              <div class="vs-num-lbl vn">Thị trường</div>
+            </div>
+          </div>
+          <span class="vs-link en">Visit site ↗</span>
+          <span class="vs-link vn">Xem web ↗</span>
+        </a>
+
+        <a href="https://theantadventurescrm.github.io/theantadventuresCRM/" target="_blank" class="vstrip amber-v fi">
+          <div class="vs-icon">💻</div>
+          <div>
+            <div class="vs-name">CRM for Tourism</div>
+            <div class="vs-type en">SaaS · Vietnam Travel Industry</div>
+            <div class="vs-type vn">SaaS · Ngành Du Lịch Việt Nam</div>
+          </div>
+          <div class="vs-divider"></div>
+          <div class="vs-nums">
+            <div class="vs-num">
+              <span class="vs-num-val a">All-in-1</span>
+              <div class="vs-num-lbl en">Platform</div>
+              <div class="vs-num-lbl vn">Nền tảng</div>
+            </div>
+            <div class="vs-num">
+              <span class="vs-num-val a">193</span>
+              <div class="vs-num-lbl en">Tour products</div>
+              <div class="vs-num-lbl vn">Sản phẩm tour</div>
+            </div>
+            <div class="vs-num">
+              <span class="vs-num-val a">AI</span>
+              <div class="vs-num-lbl en">Powered</div>
+              <div class="vs-num-lbl vn">Tích hợp AI</div>
+            </div>
+          </div>
+          <span class="vs-link en">Live demo ↗</span>
+          <span class="vs-link vn">Xem demo ↗</span>
+        </a>
+
+        <a href="https://theantadventurescrm.github.io/Thoproject2026/" target="_blank" class="vstrip coffee-v fi">
+          <div class="vs-icon">☕</div>
+          <div>
+            <div class="vs-name">Thở Cà Phê</div>
+            <div class="vs-type en">Specialty Coffee · Long Xuyên, An Giang</div>
+            <div class="vs-type vn">Cà phê Specialty · Long Xuyên, An Giang</div>
+          </div>
+          <div class="vs-divider"></div>
+          <div class="vs-nums">
+            <div class="vs-num">
+              <span class="vs-num-val c">17M</span>
+              <div class="vs-num-lbl en">Market size</div>
+              <div class="vs-num-lbl vn">Thị trường</div>
+            </div>
+            <div class="vs-num">
+              <span class="vs-num-val c">0</span>
+              <div class="vs-num-lbl en">Competitors</div>
+              <div class="vs-num-lbl vn">Đối thủ</div>
+            </div>
+            <div class="vs-num">
+              <span class="vs-num-val c">3</span>
+              <div class="vs-num-lbl en">Coffee types</div>
+              <div class="vs-num-lbl vn">Loại cà phê</div>
+            </div>
+          </div>
+          <span class="vs-link en">View project ↗</span>
+          <span class="vs-link vn">Xem dự án ↗</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ VALUES ════════════════════════════════════════════ -->
+  <section class="values-section" id="values">
+    <div class="wrap">
+
+      <div class="sec-tag fi en">How We Work</div>
+      <div class="sec-tag fi vn">Cách Chúng Tôi Làm</div>
+      <h2 class="fi en">Six philosophies. <em>One happiness.</em></h2>
+      <h2 class="fi vn">Sáu triết lý. <em>Một hạnh phúc.</em></h2>
+
+      <!-- PHILOSOPHY WHEEL -->
+      <div class="phil-outer fi" style="margin-top:36px;">
+
+        <svg class="phil-svg" viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg">
+
+          <!-- Outer dashed ring -->
+          <circle cx="240" cy="240" r="175" fill="none" stroke="#e5e7eb" stroke-width="1.2" stroke-dasharray="4,4"/>
+
+          <!-- Spokes (drawn first, behind nodes) -->
+          <line id="spoke-0" class="phil-spoke" x1="240" y1="170" x2="240" y2="107"/>
+          <line id="spoke-1" class="phil-spoke" x1="301" y1="205" x2="356" y2="173"/>
+          <line id="spoke-2" class="phil-spoke" x1="301" y1="275" x2="356" y2="307"/>
+          <line id="spoke-3" class="phil-spoke" x1="240" y1="310" x2="240" y2="373"/>
+          <line id="spoke-4" class="phil-spoke" x1="179" y1="275" x2="124" y2="307"/>
+          <line id="spoke-5" class="phil-spoke" x1="179" y1="205" x2="124" y2="173"/>
+
+          <!-- Center hub -->
+          <circle cx="240" cy="240" r="70" fill="#2E7D52"/>
+          <circle cx="240" cy="240" r="63" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+          <!-- Center EN -->
+          <text class="en" x="240" y="232" text-anchor="middle" fill="rgba(255,255,255,.7)" font-family="Inter,sans-serif" font-size="8.5" font-weight="600" letter-spacing="1.5">CORE VALUE</text>
+          <text class="en" x="240" y="253" text-anchor="middle" fill="#ffffff" font-family="Playfair Display,serif" font-size="17" font-weight="700" font-style="italic">Happiness</text>
+          <!-- Center VN -->
+          <text class="vn" x="240" y="228" text-anchor="middle" fill="rgba(255,255,255,.7)" font-family="Inter,sans-serif" font-size="8.5" font-weight="600" letter-spacing="1.5">GIÁ TRỊ CỐT LÕI</text>
+          <text class="vn" x="240" y="250" text-anchor="middle" fill="#ffffff" font-family="Playfair Display,serif" font-size="17" font-weight="700" font-style="italic">Hạnh Phúc</text>
+
+          <!-- Node 0 — top: Small steps 🐾 -->
+          <g class="phil-node" id="node-0" onmouseenter="philOn(0)" onmouseleave="philOff()">
+            <circle class="phil-node-bg" cx="240" cy="65" r="42"/>
+            <text x="240" y="59" text-anchor="middle" font-size="18">🐾</text>
+            <text class="phil-node-lbl en" x="240" y="76" text-anchor="middle">Small steps</text>
+            <text class="phil-node-lbl vn" x="240" y="76" text-anchor="middle">Từng bước</text>
+          </g>
+
+          <!-- Node 1 — top-right: Calm 🧘 -->
+          <g class="phil-node" id="node-1" onmouseenter="philOn(1)" onmouseleave="philOff()">
+            <circle class="phil-node-bg" cx="392" cy="152" r="42"/>
+            <text x="392" y="146" text-anchor="middle" font-size="18">🧘</text>
+            <text class="phil-node-lbl en" x="392" y="163" text-anchor="middle">Stay calm</text>
+            <text class="phil-node-lbl vn" x="392" y="163" text-anchor="middle">Bình tĩnh</text>
+          </g>
+
+          <!-- Node 2 — bottom-right: People 🌱 -->
+          <g class="phil-node" id="node-2" onmouseenter="philOn(2)" onmouseleave="philOff()">
+            <circle class="phil-node-bg" cx="392" cy="328" r="42"/>
+            <text x="392" y="322" text-anchor="middle" font-size="18">🌱</text>
+            <text class="phil-node-lbl en" x="392" y="339" text-anchor="middle">People first</text>
+            <text class="phil-node-lbl vn" x="392" y="339" text-anchor="middle">Con người</text>
+          </g>
+
+          <!-- Node 3 — bottom: Lead 🤝 -->
+          <g class="phil-node" id="node-3" onmouseenter="philOn(3)" onmouseleave="philOff()">
+            <circle class="phil-node-bg" cx="240" cy="415" r="42"/>
+            <text x="240" y="409" text-anchor="middle" font-size="18">🤝</text>
+            <text class="phil-node-lbl en" x="240" y="426" text-anchor="middle">Lead by showing</text>
+            <text class="phil-node-lbl vn" x="240" y="426" text-anchor="middle">Làm gương</text>
+          </g>
+
+          <!-- Node 4 — bottom-left: Community 🌍 -->
+          <g class="phil-node" id="node-4" onmouseenter="philOn(4)" onmouseleave="philOff()">
+            <circle class="phil-node-bg" cx="88" cy="328" r="42"/>
+            <text x="88" y="322" text-anchor="middle" font-size="18">🌍</text>
+            <text class="phil-node-lbl en" x="88" y="339" text-anchor="middle">Community</text>
+            <text class="phil-node-lbl vn" x="88" y="339" text-anchor="middle">Cộng đồng</text>
+          </g>
+
+          <!-- Node 5 — top-left: Chaos ⚡ -->
+          <g class="phil-node" id="node-5" onmouseenter="philOn(5)" onmouseleave="philOff()">
+            <circle class="phil-node-bg" cx="88" cy="152" r="42"/>
+            <text x="88" y="146" text-anchor="middle" font-size="18">⚡</text>
+            <text class="phil-node-lbl en" x="88" y="163" text-anchor="middle">In the chaos</text>
+            <text class="phil-node-lbl vn" x="88" y="163" text-anchor="middle">Trong hỗn loạn</text>
+          </g>
+
+        </svg>
+
+        <!-- Description panel -->
+        <div class="phil-desc" id="phil-desc">
+          <span  class="phil-desc-emoji" id="pdEmoji"></span>
+          <div   class="phil-desc-title en"  id="pdTitleEN"></div>
+          <div   class="phil-desc-title vn"  id="pdTitleVN"></div>
+          <p     class="phil-desc-text  en"  id="pdTextEN"></p>
+          <p     class="phil-desc-text  vn"  id="pdTextVN"></p>
+          <div   class="phil-desc-hint  en"  id="pdHintEN">Hover any value to explore ↑</div>
+          <div   class="phil-desc-hint  vn"  id="pdHintVN">Di chuột vào từng giá trị ↑</div>
+        </div>
+
+      </div>
+
+      <!-- invisible spacers to keep old structure intact (removed cards) -->
+      <div style="display:none">
+        <div class="val-card fi">
+          <div class="val-icon">🤝</div>
+          <div class="val-title en">Lead by showing</div>
+          <div class="val-title vn">Lãnh đạo bằng hành động</div>
+          <p class="val-line en">Show what's possible — and the team runs on its own.</p>
+          <p class="val-line vn">Làm gương — và đội nhóm sẽ tự chạy.</p>
+        </div>
+
+        <div class="val-card fi">
+          <div class="val-icon">🌍</div>
+          <div class="val-title en">Build for community</div>
+          <div class="val-title vn">Xây vì cộng đồng</div>
+          <p class="val-line en">Profit is a result. Value for people is the purpose.</p>
+          <p class="val-line vn">Lợi nhuận là kết quả. Giá trị cho con người là mục đích.</p>
+        </div>
+
+        <div class="val-card fi">
+          <div class="val-icon">⚡</div>
+          <div class="val-title en">Build in the chaos</div>
+          <div class="val-title vn">Xây trong hỗn loạn</div>
+          <p class="val-line en">We don't wait for perfect conditions. We adapt and move now.</p>
+          <p class="val-line vn">Chúng tôi không chờ điều kiện hoàn hảo. Chúng tôi thích nghi và tiến lên ngay.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FIT ════════════════════════════════════════════════ -->
+  <section class="fit-section" id="fit">
+    <div class="wrap">
+
+      <div class="sec-tag fi en">Culture Fit</div>
+      <div class="sec-tag fi vn">Phù hợp văn hóa</div>
+      <h2 class="fi en">We're not for <em>everyone.</em></h2>
+      <h2 class="fi vn">Chúng tôi không dành cho <em>tất cả.</em></h2>
+
+      <div class="fit-grid" style="margin-top:40px;">
+
+        <div class="fi">
+          <div class="fit-col-head yes">
+            <span>✅</span>
+            <span class="en">You belong here if…</span>
+            <span class="vn">Bạn thuộc về đây nếu…</span>
+          </div>
+          <div class="fit-items">
+            <div class="fit-item"><div class="fit-dot y">✓</div><span class="en">You hit deadlines without being chased.</span><span class="vn">Bạn đúng hạn mà không cần ai nhắc.</span></div>
+            <div class="fit-item"><div class="fit-dot y">✓</div><span class="en">You see problems as puzzles, not complaints.</span><span class="vn">Bạn xem vấn đề là bài toán, không phải lý do phàn nàn.</span></div>
+            <div class="fit-item"><div class="fit-dot y">✓</div><span class="en">You're energised by uncertainty, not paralysed.</span><span class="vn">Bạn tìm thấy năng lượng trong sự bất định, không bị tê liệt.</span></div>
+            <div class="fit-item"><div class="fit-dot y">✓</div><span class="en">You care about the mission, not just the paycheck.</span><span class="vn">Bạn quan tâm đến sứ mệnh, không chỉ là lương.</span></div>
+            <div class="fit-item"><div class="fit-dot y">✓</div><span class="en">You take initiative — and own the outcome.</span><span class="vn">Bạn chủ động hành động — và chịu trách nhiệm kết quả.</span></div>
+          </div>
+        </div>
+
+        <div class="fi">
+          <div class="fit-col-head">
+            <span>🚫</span>
+            <span class="en">Probably not if…</span>
+            <span class="vn">Có lẽ không nếu…</span>
+          </div>
+          <div class="fit-items">
+            <div class="fit-item"><div class="fit-dot n">✕</div><span class="en">You need constant supervision to function.</span><span class="vn">Bạn cần được giám sát liên tục mới hoạt động được.</span></div>
+            <div class="fit-item"><div class="fit-dot n">✕</div><span class="en">You're here only for a stable salary.</span><span class="vn">Bạn đến đây chỉ vì mức lương ổn định.</span></div>
+            <div class="fit-item"><div class="fit-dot n">✕</div><span class="en">Change and ambiguity make you anxious.</span><span class="vn">Thay đổi và mơ hồ khiến bạn lo lắng.</span></div>
+            <div class="fit-item"><div class="fit-dot n">✕</div><span class="en">You wait for instructions instead of acting.</span><span class="vn">Bạn chờ hướng dẫn thay vì chủ động.</span></div>
+            <div class="fit-item"><div class="fit-dot n">✕</div><span class="en">You bring problems — but never solutions.</span><span class="vn">Bạn mang vấn đề đến — nhưng không có giải pháp.</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CTA ════════════════════════════════════════════════ -->
+  <section class="cta-section" id="contact">
+    <div class="cta-inner">
+
+      <div class="cta-chip fi">✉ <span class="en">Open to all roles · All ventures</span><span class="vn">Mở cho tất cả vị trí · Mọi venture</span></div>
+
+      <h2 class="cta-h fi en">We're not posting job ads.<br>We're looking for <em>the right people.</em></h2>
+      <h2 class="cta-h fi vn">Chúng tôi không đăng tin tuyển dụng.<br>Chúng tôi tìm <em>đúng người.</em></h2>
+
+      <p class="cta-sub fi en">Read this far and something said "yes"? That's the signal. Tell us who you are, which venture excites you, and why now.</p>
+      <p class="cta-sub fi vn">Đọc đến đây và có điều gì đó nói "có"? Đó là tín hiệu. Hãy kể ai là bạn, venture nào hứng khởi, và tại sao là bây giờ.</p>
+
+      <div class="cta-btns fi">
+        <a href="mailto:taipham@theantadventures.com?subject=I want to build with you" class="btn btn-white">
+          ✉ <span class="en">Email Tài</span><span class="vn">Email Tài</span>
+        </a>
+        <a href="mailto:vohoangphuc@theantadventures.com?subject=I want to build with you" class="btn btn-amber">
+          ✉ <span class="en">Email Phúc</span><span class="vn">Email Phúc</span>
+        </a>
+      </div>
+
+      <p class="cta-note fi en">
+        <span class="en">Who you are · Which venture · What you bring · Why now</span>
+      </p>
+      <p class="cta-note fi vn">
+        <span class="vn">Bạn là ai · Venture nào · Bạn mang lại gì · Tại sao bây giờ</span>
+      </p>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="ft-brand"><span>🐜</span> The Ant Adventures © 2026</div>
+    <div class="ft-links">
+      <a href="https://theantadventures.com" target="_blank">theantadventures.com</a>
+      <a href="https://theantadventurescrm.github.io/theantadventuresCRM/" target="_blank">CRM Demo</a>
+      <a href="https://theantadventurescrm.github.io/Thoproject2026/" target="_blank">Thở Project</a>
+      <a href="mailto:taipham@theantadventures.com">Contact</a>
+    </div>
+  </footer>
+
+  <script>
+    // Language toggle
+    function setLang(lang) {
+      document.body.classList.toggle('lang-vn', lang === 'vn');
+      document.getElementById('btnEN').classList.toggle('active', lang === 'en');
+      document.getElementById('btnVN').classList.toggle('active', lang === 'vn');
+    }
+
+    // Fade-in on scroll
+    const io = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+      { threshold: 0.1 }
+    );
+    document.querySelectorAll('.fi').forEach(el => io.observe(el));
+
+    // ── PHILOSOPHY WHEEL ──────────────────────────────────
+    const philData = [
+      {
+        emoji: '🐾',
+        en_title: 'Small step by step',
+        vn_title: 'Từng bước nhỏ',
+        en_desc:  'Big visions are built through consistent, deliberate small actions. We don\'t rush. We don\'t skip steps. We compound over time — and that is how lasting things are made.',
+        vn_desc:  'Tầm nhìn lớn được xây từ những hành động nhỏ, có chủ đích, nhất quán. Chúng tôi không vội vàng, không bỏ qua bước nào. Chúng tôi tích lũy theo thời gian — và đó là cách những thứ bền vững được tạo ra.'
+      },
+      {
+        emoji: '🧘',
+        en_title: 'Calm under pressure',
+        vn_title: 'Bình tĩnh dưới áp lực',
+        en_desc:  'When things go wrong — and in startups, they always do — we don\'t panic. We solve the problem first. We breathe. Then we act with clarity.',
+        vn_desc:  'Khi mọi thứ đổ vỡ — và trong startup, điều đó luôn xảy ra — chúng tôi không hoảng loạn. Chúng tôi giải quyết vấn đề trước. Thở. Rồi hành động với sự rõ ràng.'
+      },
+      {
+        emoji: '🌱',
+        en_title: 'People are the core',
+        vn_title: 'Con người là cốt lõi',
+        en_desc:  'Not revenue. Not growth metrics. The right people, in the right roles, allowed to grow — that is the real foundation of everything we build.',
+        vn_desc:  'Không phải doanh thu, không phải tăng trưởng. Đúng người, đúng chỗ, được phát huy — đó mới là nền tảng thật sự của mọi thứ chúng tôi xây.'
+      },
+      {
+        emoji: '🤝',
+        en_title: 'Lead by showing',
+        vn_title: 'Lãnh đạo bằng hành động',
+        en_desc:  'Show the team what\'s possible. When they see it with their own eyes, they run on their own. We build leaders — not followers.',
+        vn_desc:  'Làm gương cho đội nhóm thấy điều gì là có thể. Khi họ tự nhìn thấy, họ sẽ tự chạy. Chúng tôi xây dựng lãnh đạo — không phải người đi theo.'
+      },
+      {
+        emoji: '🌍',
+        en_title: 'Build for community',
+        vn_title: 'Xây dựng vì cộng đồng',
+        en_desc:  'Profit is a result, not the purpose. Everything we build should leave something genuinely good behind — for people, for community, for the environment.',
+        vn_desc:  'Lợi nhuận là kết quả, không phải mục đích. Mọi thứ chúng tôi xây phải để lại điều tốt đẹp — cho con người, cộng đồng và môi trường.'
+      },
+      {
+        emoji: '⚡',
+        en_title: 'Build in the chaos',
+        vn_title: 'Xây trong hỗn loạn',
+        en_desc:  'Inflation, AI disruption, post-COVID instability — we don\'t wait for the perfect moment. We adapt, we move, and we build right now.',
+        vn_desc:  'Lạm phát, AI thay đổi, bất ổn hậu COVID — chúng tôi không chờ thời điểm hoàn hảo. Chúng tôi thích nghi, tiến lên và xây dựng ngay bây giờ.'
+      }
+    ];
+
+    function philOn(i) {
+      // Activate node + spoke
+      document.querySelectorAll('.phil-node').forEach(n => n.classList.remove('active'));
+      document.querySelectorAll('.phil-spoke').forEach(s => s.classList.remove('active'));
+      document.getElementById('node-' + i).classList.add('active');
+      document.getElementById('spoke-' + i).classList.add('active');
+
+      // Fill description panel
+      const d = philData[i];
+      document.getElementById('pdEmoji').textContent    = d.emoji;
+      document.getElementById('pdTitleEN').textContent  = d.en_title;
+      document.getElementById('pdTitleVN').textContent  = d.vn_title;
+      document.getElementById('pdTextEN').textContent   = d.en_desc;
+      document.getElementById('pdTextVN').textContent   = d.vn_desc;
+
+      // Show content, hide hint
+      ['pdEmoji','pdTitleEN','pdTitleVN','pdTextEN','pdTextVN'].forEach(id => {
+        document.getElementById(id).style.display = '';
+      });
+      document.getElementById('pdHintEN').style.display = 'none';
+      document.getElementById('pdHintVN').style.display = 'none';
+    }
+
+    function philOff() {
+      document.querySelectorAll('.phil-node').forEach(n => n.classList.remove('active'));
+      document.querySelectorAll('.phil-spoke').forEach(s => s.classList.remove('active'));
+
+      // Hide content, show hint
+      ['pdEmoji','pdTitleEN','pdTitleVN','pdTextEN','pdTextVN'].forEach(id => {
+        document.getElementById(id).style.display = 'none';
+      });
+      document.getElementById('pdHintEN').style.display = '';
+      document.getElementById('pdHintVN').style.display = '';
+    }
+
+    // Init hidden state
+    philOff();
+  </script>
+
+</body>
+</html>
