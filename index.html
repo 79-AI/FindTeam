@@ -828,7 +828,7 @@
           <text class="vn" x="240" y="250" text-anchor="middle" fill="#ffffff" font-family="Playfair Display,serif" font-size="17" font-weight="700" font-style="italic">Hạnh Phúc</text>
 
           <!-- Node 0 — top: Small steps 🐾 -->
-          <g class="phil-node" id="node-0" onmouseenter="philOn(0)" onmouseleave="philOff()">
+          <g class="phil-node" id="node-0" onmouseenter="philOn(0)" onmouseleave="philOff()" onclick="philClick(0)">
             <circle class="phil-node-bg" cx="240" cy="65" r="42"/>
             <text x="240" y="59" text-anchor="middle" font-size="18">🐾</text>
             <text class="phil-node-lbl en" x="240" y="76" text-anchor="middle">Small steps</text>
@@ -836,7 +836,7 @@
           </g>
 
           <!-- Node 1 — top-right: Calm 🧘 -->
-          <g class="phil-node" id="node-1" onmouseenter="philOn(1)" onmouseleave="philOff()">
+          <g class="phil-node" id="node-1" onmouseenter="philOn(1)" onmouseleave="philOff()" onclick="philClick(1)">
             <circle class="phil-node-bg" cx="392" cy="152" r="42"/>
             <text x="392" y="146" text-anchor="middle" font-size="18">🧘</text>
             <text class="phil-node-lbl en" x="392" y="163" text-anchor="middle">Stay calm</text>
@@ -844,7 +844,7 @@
           </g>
 
           <!-- Node 2 — bottom-right: People 🌱 -->
-          <g class="phil-node" id="node-2" onmouseenter="philOn(2)" onmouseleave="philOff()">
+          <g class="phil-node" id="node-2" onmouseenter="philOn(2)" onmouseleave="philOff()" onclick="philClick(2)">
             <circle class="phil-node-bg" cx="392" cy="328" r="42"/>
             <text x="392" y="322" text-anchor="middle" font-size="18">🌱</text>
             <text class="phil-node-lbl en" x="392" y="339" text-anchor="middle">People first</text>
@@ -852,7 +852,7 @@
           </g>
 
           <!-- Node 3 — bottom: Lead 🤝 -->
-          <g class="phil-node" id="node-3" onmouseenter="philOn(3)" onmouseleave="philOff()">
+          <g class="phil-node" id="node-3" onmouseenter="philOn(3)" onmouseleave="philOff()" onclick="philClick(3)">
             <circle class="phil-node-bg" cx="240" cy="415" r="42"/>
             <text x="240" y="409" text-anchor="middle" font-size="18">🤝</text>
             <text class="phil-node-lbl en" x="240" y="426" text-anchor="middle">Lead by showing</text>
@@ -860,7 +860,7 @@
           </g>
 
           <!-- Node 4 — bottom-left: Community 🌍 -->
-          <g class="phil-node" id="node-4" onmouseenter="philOn(4)" onmouseleave="philOff()">
+          <g class="phil-node" id="node-4" onmouseenter="philOn(4)" onmouseleave="philOff()" onclick="philClick(4)">
             <circle class="phil-node-bg" cx="88" cy="328" r="42"/>
             <text x="88" y="322" text-anchor="middle" font-size="18">🌍</text>
             <text class="phil-node-lbl en" x="88" y="339" text-anchor="middle">Community</text>
@@ -868,7 +868,7 @@
           </g>
 
           <!-- Node 5 — top-left: Chaos ⚡ -->
-          <g class="phil-node" id="node-5" onmouseenter="philOn(5)" onmouseleave="philOff()">
+          <g class="phil-node" id="node-5" onmouseenter="philOn(5)" onmouseleave="philOff()" onclick="philClick(5)">
             <circle class="phil-node-bg" cx="88" cy="152" r="42"/>
             <text x="88" y="146" text-anchor="middle" font-size="18">⚡</text>
             <text class="phil-node-lbl en" x="88" y="163" text-anchor="middle">In the chaos</text>
@@ -1068,6 +1068,34 @@
       }
     ];
 
+    // Touch mode: prevent mouseleave from closing panel after a tap
+    let _touchActive = false;
+
+    function philClick(i) {
+      const node = document.getElementById('node-' + i);
+      const alreadyActive = node.classList.contains('active');
+      _touchActive = true;
+      if (alreadyActive) {
+        _touchActive = false;
+        philReset();
+      } else {
+        philOn(i);
+      }
+    }
+
+    function philReset() {
+      document.querySelectorAll('.phil-node').forEach(n => n.classList.remove('active'));
+      document.querySelectorAll('.phil-spoke').forEach(s => s.classList.remove('active'));
+      const isVN = document.body.classList.contains('lang-vn');
+      document.getElementById('pdEmoji').textContent   = '';
+      document.getElementById('pdTitleEN').textContent = '';
+      document.getElementById('pdTitleVN').textContent = '';
+      document.getElementById('pdDescEN').textContent  = '';
+      document.getElementById('pdDescVN').textContent  = '';
+      document.getElementById('pdHintEN').style.display = isVN ? 'none' : 'block';
+      document.getElementById('pdHintVN').style.display = isVN ? 'block' : 'none';
+    }
+
     function philOn(i) {
       // Activate node + spoke
       document.querySelectorAll('.phil-node').forEach(n => n.classList.remove('active'));
@@ -1092,6 +1120,7 @@
     }
 
     function philOff() {
+      if (_touchActive) return; // on mobile, keep panel open until next tap
       document.querySelectorAll('.phil-node').forEach(n => n.classList.remove('active'));
       document.querySelectorAll('.phil-spoke').forEach(s => s.classList.remove('active'));
 
